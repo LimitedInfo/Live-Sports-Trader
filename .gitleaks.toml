@@ -1,0 +1,11 @@
+[extend]
+# Use the default gitleaks configuration
+useDefault = true
+
+# Paths to exclude
+[allowlist]
+paths = [
+    "test_data/baseball.html",
+    "test_data/live_page_fanduel.html",
+    "test_data/*.html"
+]
