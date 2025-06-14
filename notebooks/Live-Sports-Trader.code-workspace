@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../polymarket_sniper"
+		},
+		{
+			"path": "../../tweet_trader"
+		}
+	],
+	"settings": {}
+}

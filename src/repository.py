@@ -29,21 +29,18 @@ def parse_live_odds(html_file='baseball.html', driver=None):
     soup = BeautifulSoup(content, 'html.parser')
     team_odds = {}
 
-    # Find all buttons with aria-label containing "Odds"
-    buttons_with_odds = soup.find_all('div', {'role': 'button', 'aria-label': re.compile(r'.*Odds.*', re.IGNORECASE)})
+    # Find all buttons with aria-label containing "Moneyline" (with or without "Odds")
+    buttons_with_odds = soup.find_all('div', {'role': 'button', 'aria-label': re.compile(r'.*Moneyline.*', re.IGNORECASE)})
 
     for button in buttons_with_odds:
         aria_label = button.get('aria-label', '')
 
-        # Extract odds
-        odds_match = re.search(r'([+-]\d+)\s*Odds', aria_label)
-        if not odds_match:
-            continue
+        # Extract odds - look for pattern with or without "Odds" at the end
+        odds_match = re.search(r'([+-]\d+)(?:\s*Odds)?', aria_label)
+        odds = odds_match.group(1) if odds_match else None
 
-        odds = odds_match.group(1)
-
-        # Extract team name - look for pattern "Moneyline, TEAM NAME, odds Odds"
-        team_match = re.search(r'Moneyline,\s*([^,]+),\s*[+-]\d+\s*Odds', aria_label)
+        # Extract team name - look for pattern "Moneyline, TEAM NAME, odds" or "Moneyline, TEAM NAME. selection unavailable"
+        team_match = re.search(r'Moneyline,\s*([^,.]+)', aria_label)
         if team_match:
             team_name = team_match.group(1).strip()
             team_odds[team_name] = odds

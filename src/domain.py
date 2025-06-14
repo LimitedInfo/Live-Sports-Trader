@@ -84,7 +84,7 @@ class Game:
         no_vig_team2_prob = team2_prob / total_probability
         print(f"no vig team2 prob: {no_vig_team2_prob}")
 
-        if no_vig_team1_prob + no_vig_team2_prob != 1:
+        if no_vig_team1_prob + no_vig_team2_prob < .99 or no_vig_team1_prob + no_vig_team2_prob > 1.01:
             raise ValueError("Total no vig probability is not 1")
 
         return {
@@ -121,8 +121,13 @@ class Team:
             self.prediction_market_odds: Odds = None
             self.no_vig_true_odds: Odds = None
             self.no_vig_prediction_market_odds: Odds = None
+            self.last_order_id: str = None
+            self.last_order_filled_time: int = None
 
     def get_limit_price_for_desired_expected_value(self, desired_expected_value: float):
+        if self.no_vig_true_odds is None:
+            raise ValueError("No vig true odds are not set")
+
         return self.no_vig_true_odds.probability / (1 + desired_expected_value)
 
     def get_difference_between_desired_expected_value_and_market_bid(self, desired_expected_value: float):
